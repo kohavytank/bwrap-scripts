@@ -11,7 +11,7 @@ bwrap.ro(XDG_DATA_HOME / "faugus-launcher" / "umu-run")
 bwrap.ro(XDG_CONFIG_HOME / "heroic" / "tools" / "runtimes")
 bwrap.ro("/etc/ld.so.cache")
 bwrap.ro("/var/cache/ldconfig")
-bwrap.dev("/sys")
+bwrap.ro("/sys")
 # UMU
 bwrap.rw(XDG_CACHE_HOME / "umu", create_dir=True)
 bwrap.rw(XDG_DATA_HOME / "umu", create_dir=True)
