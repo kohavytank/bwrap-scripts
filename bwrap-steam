@@ -6,7 +6,10 @@ from common import *
 from steam_fixes import steam_fixes
 
 dbus_proxy = DbusProxy()
-bwrap = Bwrap(dbus_proxy)
+# Share the PID namespace, like pressure-vessel does: the Steam API may need
+# to see the running Steam client. Only effective with BWRAP_NETWORK=none or
+# host: pasta always starts its command in a new PID namespace.
+bwrap = Bwrap(dbus_proxy, unshare_pid=False)
 # Steam
 bwrap.ro(HOME / ".steam")
 _STEAM_COMPAT_CLIENT_INSTALL_PATH = "STEAM_COMPAT_CLIENT_INSTALL_PATH"
@@ -32,7 +35,7 @@ for mount in os.getenv(_STEAM_COMPAT_MOUNTS, "").split(os.pathsep):
 bwrap.env(_STEAM_COMPAT_MOUNTS)
 bwrap.ro("/etc/ld.so.cache")
 bwrap.ro("/var/cache/ldconfig")
-bwrap.dev("/sys")
+bwrap.ro("/sys")
 bwrap.env("SRT_LOGGER_USE_JOURNAL")
 bwrap.env("SRT_LOG_LEVEL_PREFIX")
 bwrap.env("SRT_LOG_TO_JOURNAL")
