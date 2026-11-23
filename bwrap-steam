@@ -70,5 +70,5 @@ steam_fixes(bwrap)
 
 if __name__ == "__main__":
     for key, value in sorted(os.environ.items(), key=lambda pair: pair[0]):
-        print(f"{key}={value}")
+        logger.info("%s=%s", key, value)
     main(bwrap, sys.argv[1:])

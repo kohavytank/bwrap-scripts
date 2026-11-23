@@ -1,3 +1,4 @@
+import logging
 import os
 import random
 import shlex
@@ -16,6 +17,9 @@ XDG_DATA_HOME = Path(os.getenv("XDG_DATA_HOME", HOME / ".local" / "share"))
 XDG_RUNTIME_DIR = Path(
     os.getenv("XDG_RUNTIME_DIR", Path("/run/user") / str(os.getuid()))
 )
+
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
 
 
 class CmdBuilder:
@@ -40,7 +44,7 @@ class CmdBuilder:
         return [self._program, *self._argv[1:]]
 
     def exec(self) -> Never:
-        print(str(self), flush=True)
+        logger.info("%s", self)
         os.execvp(self._program, self._argv)
 
 
@@ -138,7 +142,7 @@ class DbusProxy(CmdBuilder):
 
     def spawn(self) -> Popen:
         assert self._popen is None, "xdg-dbus-proxy has already been spawned"
-        print(str(self), flush=True)
+        logger.info("%s", self)
         self._popen = Popen(
             self.cmd, pass_fds=[self._write_fd], stdout=sys.stdout, stderr=sys.stderr
         )
